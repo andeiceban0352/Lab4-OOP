@@ -13,15 +13,6 @@ public:
 
 };
 
-class Person:Taxi_Company
-{
-public:
-    string name;
-    string forename;
-    string phone_number;
-
-};
-
 class Ride_Type{
 public:
     float start_ride;
@@ -88,6 +79,20 @@ public:
     }
 };
 
+class Person:Taxi_Company
+{
+public:
+    string name;
+    string forename;
+    string phone_number;
+    float rank_val;
+
+    virtual void rank() {
+        rank_val = 0;
+    };
+
+};
+
 
 class Customer:public Person
 {
@@ -104,6 +109,11 @@ public:
     {
     	cout << "Hello my name is " << forename << ". I would want to go from Chisinau to Balti !" << endl ;
     }
+
+    float rank(float value){
+        rank_val = value;
+        return rank_val;
+    };
 };
 
 class Operator:public Person
@@ -127,6 +137,74 @@ public:
     {
     	cout << "This is " << forename << " i just got a new request " << endl; 
     }
+
+    float rank(float value){
+        rank_val = value;
+        return rank_val;
+    };
+};
+
+class Taxi_Driver:public Person
+{
+public:
+    int salary;
+    int age;
+    string IDNP;
+
+    Taxi_Driver(string t_name, string t_forename, string t_phone_number, int t_age, string t_IDNP)
+    {
+    	name = t_name;
+        forename = t_forename;
+        phone_number = t_phone_number;
+        age = t_age;
+        IDNP = t_IDNP;
+    }
+
+    void drive()
+    {
+    	cout << "Hello, it's " << forename << " I will get this ride !" << endl; 
+    }
+
+    float rank(float value){
+       rank_val = value;
+       return rank_val;
+    };
+};
+
+class Admin:public Person
+{
+public:
+
+    float income_amount = 0;
+    int age;
+    string IDNP;
+
+    Admin(string c_name, string c_forename, string c_phone_number, int c_age, string c_IDNP)
+    {
+        name = c_name;
+        forename = c_forename;
+        phone_number = c_phone_number;
+        age = c_age;
+        IDNP = c_IDNP;
+
+    }
+
+    void manage_company()
+    {
+        cout << "My name is " << forename << " and I manage this Taxi Company !" << endl;
+    }
+
+    void manage_salary(float customer_amount) {
+        income_amount = income_amount + customer_amount;
+        cout << "The income for this day is " << income_amount << " lei. ";
+    }
+
+    float rank(float value){
+        rank_val = value;
+        return rank_val;
+    };
+
+
 };
 
 class Booking:public Economy_Management
@@ -149,28 +227,6 @@ public:
     void booking()
     {
     	cout << "The customer wants : " << endl; 
-    }
-};
-
-class Taxi_Driver:Person
-{
-public:
-    int salary;
-    int age;
-    string IDNP;
-
-    Taxi_Driver(string t_name, string t_forename, string t_phone_number, int t_age, string t_IDNP)
-    {
-    	name = t_name;
-        forename = t_forename;
-        phone_number = t_phone_number;
-        age = t_age;
-        IDNP = t_IDNP;
-    }
-
-    void drive()
-    {
-    	cout << "Hello, it's " << forename << " I will get this ride !" << endl; 
     }
 };
 
@@ -235,36 +291,6 @@ public:
     }
 };
 
-class Admin:public Person
-{
-public:
-
-    float income_amount = 0;
-    int age;
-    string IDNP;
-
-    Admin(string c_name, string c_forename, string c_phone_number, int c_age, string c_IDNP)
-    {
-        name = c_name;
-        forename = c_forename;
-        phone_number = c_phone_number;
-        age = c_age;
-        IDNP = c_IDNP;
-
-    }
-
-    void manage_company()
-    {
-        cout << "My name is " << forename << " and I manage this Taxi Company !" << endl;
-    }
-
-    void manage_salary(float customer_amount) {
-        income_amount = income_amount + customer_amount;
-        cout << "The income for this day is " << income_amount << " lei. ";
-    }
-
-
-};
 
 class Salary:public Economy_Management
 {
@@ -318,12 +344,18 @@ int main()
 
     Standart Stand;
     Premium Prem;
-
+    
+    // Set the time and distance, override both functions 
     Stand.setDistance(6);
     Stand.setTime(15);
-
     Prem.setDistance(6);
     Prem.setTime(15);   
+
+    // Set the rank override rank() function
+    driver_x.rank(4);
+    customer_x.rank(3);
+    operator_x.rank(2);
+    admin_x.rank(1);
 
     customer_x.customer_request();
     operator_x.get_the_request();
