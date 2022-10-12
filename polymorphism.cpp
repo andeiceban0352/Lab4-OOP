@@ -1,19 +1,20 @@
 #include "iostream"
+#include "string"
+#include "cstdlib"
 
 using namespace std;
-
-// 
 
 class Taxi_Company
 {
 public:
-    void tx_ocmpany() {
+    virtual void info() {
         cout << "This is the Taxi Company";
+        cout << "It contains all the information about the Company !";
     }
 
 };
 
-class Ride_Type{
+class Ride_Type:public Taxi_Company{
 public:
     float start_ride;
     float cost_per_km;
@@ -24,7 +25,7 @@ public:
 
     virtual float ride_price() = 0;
 
-    void setTime(float x){
+    void setTime(float x) {
         time = x;
     }
 
@@ -39,9 +40,13 @@ public:
     float cost_per_km = 5.5;
     float cost_per_min = 0.38;
 
-    float ride_price(){
+    float ride_price() override{
         price = start_ride + (cost_per_km * distance) + (cost_per_min * time);
         return price;
+    }
+
+    void info() override{
+        cout << "Standart Ride";
     }
 };
 
@@ -51,9 +56,13 @@ public:
     float cost_per_km = 10.5;
     float cost_per_min = 1;
     
-    float ride_price(){
+    float ride_price() override{
         price = start_ride + (cost_per_km * distance) + (cost_per_min * time);
         return price;
+    }
+
+    void info() override{
+        cout << "Premium Ride";
     }
 };
 
@@ -77,6 +86,10 @@ public:
     void return_rating() {
         cout << "We are proud of you !!!" << endl;
     }
+
+    void info() override{
+        cout << "Management System";
+    }
 };
 
 class Person:Taxi_Company
@@ -87,9 +100,11 @@ public:
     string phone_number;
     float rank_val;
 
-    virtual void rank() {
-        rank_val = 0;
-    };
+    virtual float rank(float value) = 0;
+
+    void info() override{
+        cout << "Person Class";
+    }
 
 };
 
@@ -110,10 +125,14 @@ public:
     	cout << "Hello my name is " << forename << ". I would want to go from Chisinau to Balti !" << endl ;
     }
 
-    float rank(float value){
+    float rank(float value) override{
         rank_val = value;
         return rank_val;
     };
+
+    void info() override{
+        cout << "Customer Class";
+    }
 };
 
 class Operator:public Person
@@ -138,10 +157,14 @@ public:
     	cout << "This is " << forename << " i just got a new request " << endl; 
     }
 
-    float rank(float value){
+    float rank(float value) override{
         rank_val = value;
         return rank_val;
     };
+
+    void info() override{
+        cout << "Operator Class";
+    }
 };
 
 class Taxi_Driver:public Person
@@ -165,10 +188,14 @@ public:
     	cout << "Hello, it's " << forename << " I will get this ride !" << endl; 
     }
 
-    float rank(float value){
+    float rank(float value) override{
        rank_val = value;
        return rank_val;
     };
+
+    void info() override{
+        cout << "Taxi Driver Class";
+    }
 };
 
 class Admin:public Person
@@ -186,7 +213,6 @@ public:
         phone_number = c_phone_number;
         age = c_age;
         IDNP = c_IDNP;
-
     }
 
     void manage_company()
@@ -199,34 +225,41 @@ public:
         cout << "The income for this day is " << income_amount << " lei. ";
     }
 
-    float rank(float value){
+    float rank(float value) override{
         rank_val = value;
         return rank_val;
     };
 
-
+    void info() override{
+        cout << "Admin Class";
+    }
 };
 
-class Booking:public Economy_Management
+class Booking:public Taxi_Company
 {
 public:
     string starting_time;
     string arrival_time;
     string current_destination;
     string destination;
+    string ride_type;
 
-    Booking(string b_starting_time, string b_arrival_time, string b_current_destination, string b_destination, float b_price)
+    Booking(string b_starting_time, string b_arrival_time, string b_current_destination, string b_destination, string b_ride_type)
     {
     	starting_time = b_starting_time;
         arrival_time = b_arrival_time;
         current_destination = b_current_destination;
         destination = b_destination;
-        price = b_price;
+        ride_type = b_ride_type;
     }
 
     void booking()
     {
     	cout << "The customer wants : " << endl; 
+    }
+
+    void info() override{
+        cout << "Booking Class";
     }
 };
 
@@ -262,6 +295,10 @@ public:
             cout << "Which is a regular car !" << endl;
         }
     }
+
+    void info() override{
+        cout << "Car Class";
+    }
 };
 
 
@@ -270,17 +307,15 @@ class Payment:public Economy_Management
 public:
     string payment_type;
 
-    Payment(string c_payment_type, float c_amount)
+    Payment(string c_payment_type)
     {
     	payment_type = c_payment_type;
-        amount = c_amount;
-
     }
 
     void payment_details()
     {
-        cout << " It was " << amount << " lei " << "and customer paid with " << payment_type << endl;
-        if(amount == 0 && payment_type == "card"){
+        cout << "The customer paid with " << payment_type << endl;
+        if(payment_type == "card"){
             cout << "Also, ";
             cout << "the payment was completed unsuccessfully !" << endl;
             cout << "Need to pay with cash !" << endl;
@@ -288,6 +323,10 @@ public:
             cout << "Also, ";
             cout << "the payment was completed successfully !" << endl;
         }
+    }
+
+    void info() override{
+        cout << "Payment Class";
     }
 };
 
@@ -301,6 +340,10 @@ public:
         return income;
     }
 
+    void info() override{
+        cout << "Salary Class";
+    }
+
 };
 
 class Income: public Economy_Management
@@ -311,14 +354,22 @@ public:
         income = income + current_income - (current_income*0.5);
         return income;
     }
+
+    void info() override{
+        cout << "Income Class";
+    }
 };
 
-class Rating: public Economy_Management
+class Rating: public Taxi_Company
 {
 public:
     
     void ride_rating(string rating){
-    	cout << "The customed sad that ride was " << rating << " out of 10" << endl;
+    	cout << "The customed said that ride was " << rating << " out of 10" << endl;
+    }
+
+    void info() override{
+        cout << "Rating Class";
     }
 };
 
@@ -329,14 +380,15 @@ int main()
     float income_daily = 0;
     float tom_income = 0;
     float tom_income_total = 0;
+    string ride_type = "standart";
 
 
     Customer customer_x("Erikow", "Tom", "065487947");
     Operator operator_x("Rewot", "Emma", "064879245", 31, "0123456789123");
-    Booking boking_x("15:34", "14:06", "Chisinau", "Balti", 400);
+    Booking boking_x("15:30", "15:45", "Riscani", "Centru","standart");
     Car car_x("BMW", "M 3" , "Automate", "benzine", 349, 300, "4Y1SL65848Z411439");
     Taxi_Driver driver_x("Wetsib", "Jim","069748167", 24, "7894561230124");
-    Payment payment_x("card", 179.32);
+    Payment payment_x("card");
     Admin admin_x("Bdirs", "Rocko", "0788495134", 39, "4871354871545");
     Salary salary_x;
     Income income_x;
@@ -351,32 +403,31 @@ int main()
     Prem.setDistance(6);
     Prem.setTime(15);   
 
-    // Set the rank override rank() function
-    driver_x.rank(4);
-    customer_x.rank(3);
-    operator_x.rank(2);
-    admin_x.rank(1);
-
     customer_x.customer_request();
     operator_x.get_the_request();
 
     boking_x.booking();
-    tom_income = boking_x.price;
-    income_daily = income_daily + boking_x.price;
+    tom_income = Stand.ride_price();
+    income_daily = income_daily + Stand.ride_price();
     tom_income_total = income_x.calculate_income(tom_income);
 
-    cout << "Go from " << boking_x.current_destination << " at " << boking_x.starting_time << " to " << boking_x.destination << " at " << boking_x.arrival_time << endl ;
-
-    cout << "For Standart Ride the price will be " << Stand.ride_price() << " lei !" << endl;
-    cout << "For Premium Ride the price will be " << Prem.ride_price() << " lei !"<< endl;
-    
+    cout << " - Go from " << boking_x.current_destination << " at " << boking_x.starting_time << " to " << boking_x.destination << " at " << boking_x.arrival_time << endl ;    
     driver_x.drive();
-    cout << "I will go with my " << car_x.name << " " << car_x.model << endl ;
+
+    cout << " - I will go with our new " << car_x.name << " " << car_x.model << endl ;
     
     car_x.car_specs();
-    rating_x.ride_rating("9");
+    int rand_rating = (rand() % 10) + 8; 
+    string rand = to_string(rand_rating);
+    rating_x.ride_rating(rand);
 
     cout << "Done !, I finished the ride !" << endl;
+
+    if(boking_x.ride_type == "standart"){
+        cout << "It is a standart ride and the price will be " << Stand.ride_price() << " lei !" << endl;
+    }else {
+        cout << "It is a premium ride and the price will be " << Prem.ride_price() << " lei !"<< endl;
+    }
 
     payment_x.payment_details();
 
@@ -386,9 +437,14 @@ int main()
     salary_x.return_income();
 
     cout << "The salary for " << customer_x.forename << " at the moment is " << salary_x.calculate_salary(tom_income - (tom_income*0.5)) << " lei. ";
-    salary_x.return_salary();
-    cout << "The income for Tom is " << tom_income_total << " lei" << endl;
-    
+
+    cout << " \n" <<  endl;
+
+    cout << "Here are the ranking system of each Person from Company : " << endl;
+    cout << "The Driver has : " << driver_x.rank(4)<< endl;
+    cout << "The Customer has : " << customer_x.rank(3)<< endl;
+    cout << "The Operator has : " << operator_x.rank(2)<< endl;
+    cout << "The Admin has : " << admin_x.rank(1)<< endl;
 
     return 0;
 }
